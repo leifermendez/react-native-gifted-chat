@@ -12,24 +12,29 @@ export default class Actions extends React.Component {
     this.onActionsPress = this.onActionsPress.bind(this);
   }
 
-  onActionsPress() {
-    const { options } = this.props;
-    const optionKeys = Object.keys(options);
-    const cancelButtonIndex = optionKeys.indexOf('Cancel');
-    this.context.actionSheet().showActionSheetWithOptions(
-      {
-        options: optionKeys,
-        cancelButtonIndex,
-        tintColor: this.props.optionTintColor,
-      },
-      (buttonIndex) => {
-        const key = optionKeys[buttonIndex];
-        if (key) {
-          options[key](this.props);
+onActionsPress() {
+  const options = Object.keys(this.props.options);
+  const cancelButtonIndex = Object.keys(this.props.options).length - 1;
+  this.context.actionSheet().showActionSheetWithOptions(
+    {
+      options,
+      cancelButtonIndex,
+      tintColor: this.props.optionTintColor,
+    },
+    (buttonIndex) => {
+      let i = 0;
+      Object.keys(this.props.options).forEach((key) => {
+        if (this.props.options[key]) {
+          if (buttonIndex === i) {
+            this.props.options[key](this.props);
+            // return;
+          }
+          i += 1;
         }
-      },
-    );
-  }
+      });
+    },
+  );
+}
 
   renderIcon() {
     if (this.props.icon) {
